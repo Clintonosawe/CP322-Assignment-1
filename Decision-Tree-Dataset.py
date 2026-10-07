@@ -57,5 +57,57 @@ def load_data():
         vectorizer
     )
 
+
+
+
+def select_model(X_train, y_train, X_validation, y_validation, X_test, y_test):
+
+
+    depths = [2, 5, 10, 20, 50, 100, 150, 200, 300]
+    validation_accuracies = []
+
+
+    for depth in depths:
+        model = DecisionTreeClassifier(criterion="entropy", max_depth=depth, random_state=42)
+        model.fit(X_train, y_train)
+
+        predictions = model.predict(X_validation)
+        accuracy = np.mean(predictions == y_validation)
+
+        validation_accuracies.append(accuracy)
+        print("max_depth =", depth, "validation accuracy:", accuracy)
+
+
+    best_index = np.argmax(validation_accuracies)
+    best_depth = depths[best_index]
+
+    best_model = DecisionTreeClassifier(criterion="entropy", max_depth=best_depth, random_state=42)
+    best_model.fit(X_train, y_train)
+
+    test_predictions = best_model.predict(X_test)
+    test_accuracy = np.mean(test_predictions == y_test)
+
+    print()
+    print("Best max_depth:", best_depth)
+    print("Actual depth of the trained tree:", best_model.get_depth())
+    print("Test accuracy:", test_accuracy)
+
+
+
+    plt.plot(depths, validation_accuracies, marker="o")
+    plt.xlabel("max_depth")
+    plt.ylabel("Validation accuracy")
+    plt.title("Validation accuracy vs. max_depth")
+    plt.grid(True)
+    plt.savefig("validation_accuracy_vs_max_depth.png")
+    plt.show()
+
+
+    return best_model
+
+
+
+
 if __name__ == "__main__":
-    data = load_data()
+    X_train, y_train, X_validation, y_validation, X_test, y_test, vectorizer = load_data()
+    select_model(X_train, y_train, X_validation, y_validation, X_test, y_test)
