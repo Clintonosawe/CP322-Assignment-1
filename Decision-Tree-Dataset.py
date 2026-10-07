@@ -56,3 +56,6 @@ def load_data():
         y_test,
         vectorizer
     )
+
+if __name__ == "__main__":
+    data = load_data()
