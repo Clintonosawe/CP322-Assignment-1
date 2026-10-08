@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 from sklearn.feature_extraction.text import CountVectorizer 
-from sklearn.tree import DecisionTreeClassifier 
+from sklearn.tree import DecisionTreeClassifier, export_text
 
 def load_data(): 
     with open("Decision Tree-Dataset/real.txt", "r", encoding="utf-8") as file:
@@ -96,6 +96,21 @@ def select_model(X_train, y_train, X_validation, y_validation, X_test, y_test):
 
     return best_model
 
+def visualize_tree(best_model, vectorizer):
+    feature_names = vectorizer.get_feature_names_out()
+
+    tree_text = export_text(
+        best_model,
+        feature_names=list(feature_names),
+        max_depth=1
+    )
+
+    print("\nFirst Two Layers of Best Decision Tree:")
+    print(tree_text)
+    
+    max_depth=1
+
 if __name__ == "__main__":
     X_train, y_train, X_validation, y_validation, X_test, y_test, vectorizer = load_data()
     select_model(X_train, y_train, X_validation, y_validation, X_test, y_test)
+    visualize_tree(best_model, vectorizer)
